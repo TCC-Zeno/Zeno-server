@@ -1,10 +1,6 @@
-const express = require('express');
-const app =express();
+import postgres from 'postgres'
 
-app.use(express.json());
-app.get("/", (req,res)=>{
-    res.send("Hello World");
-});
-app.listen(3000, () => {
-    console.log('Porta 3000');
-});
+const connectionString = process.env.DATABASE_URL
+const sql = postgres(connectionString)
+
+export default sql
