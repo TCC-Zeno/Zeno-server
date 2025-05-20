@@ -8,11 +8,13 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
+    "@supabase/supabase-js": "github:supabase/supabase-js",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.21.2",
-    "postgres": "^3.4.5"
+    "postgres": "^3.4.5",
+    "react-router": "^7.6.0",
+    "react-router-dom": "^7.6.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
