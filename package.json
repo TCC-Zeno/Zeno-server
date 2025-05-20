@@ -4,19 +4,15 @@
   "description": "Backend para o projeto Zeno com Express e Supabase",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "sucrase-node",
     "dev": "nodemon server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "github:supabase/supabase-js",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.21.2",
-    "postgres": "^3.4.5",
-    "react-router": "^7.6.0",
-    "react-router-dom": "^7.6.0"
+    "express": "^4.21.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "sucrase": "^3.35.0"
   }
 }

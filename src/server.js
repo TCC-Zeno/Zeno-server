@@ -1,6 +1,3 @@
-import postgres from 'postgres'
+import app from './app';
 
-const connectionString = process.env.DATABASE_URL
-const sql = postgres(connectionString)
-
-export default sql
+app.listen(3000);
