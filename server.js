@@ -15,9 +15,10 @@ import financeRoutes from "./routes/finance.js";
 
 dotenv.config();
 const app = express();
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
