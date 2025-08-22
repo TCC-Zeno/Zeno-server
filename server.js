@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import session from "express-session";
 import createMemoryStore from "memorystore";
 import passport from "passport";
-import "./strategies/local.js"; 
+import "./strategies/local.js";
 
 const MemoryStore = createMemoryStore(session);
 
@@ -37,10 +37,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
-      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
     store: new MemoryStore({
       checkPeriod: 86400000, // 24h
