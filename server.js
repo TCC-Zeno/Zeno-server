@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
+import fetch from "node-fetch";
+import cron from "node-cron";
 import "./strategies/local.js";
 
 // Rotas 
@@ -141,6 +143,15 @@ app.use((req, res) => {
     success: false,
     error: 'Rota não encontrada'
   });
+});
+
+cron.schedule("*/10 * * * *", async () => {
+  try {
+    await fetch("https://tcc-zeno.onrender.com");
+    console.log("Keep-alive enviado");
+  } catch (err) {
+    console.error("Erro no keep-alive:", err.message);
+  }
 });
 
 const PORT = process.env.PORT || 3000;
