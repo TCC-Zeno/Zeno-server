@@ -1,5 +1,5 @@
 import express from "express";
-import{ addFinanceform, financeId, financeCategoria, addFinanceCategoria, editFinanceForm, financeDelete } from "../controllers/financeController.js";
+import { addFinanceform, financeId, financeCategoria, addFinanceCategoria, editFinanceForm, financeDelete } from "../controllers/financeController.js";
 const router = express.Router();
 
 router.post("/addFinanceForm", addFinanceform);

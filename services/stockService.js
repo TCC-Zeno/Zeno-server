@@ -79,10 +79,11 @@ export const uploadImage = async (file, uuid) => {
 };
 
 
-export const getProduct = async () => {
+export const getProduct = async (userId) => {
   const { data, error } = await supabase
     .from("product")
     .select("*")
+    .eq("uuid", userId)
     .order('created_at', { ascending: true });
 
   if (error) throw error;
@@ -160,7 +161,7 @@ export const getProductsAlerts = async (uuid) => {
     .select("alert, name")
     .eq("uuid", uuid)
     .in("alert", ["restock", "low_stock", "out_stock"])
-    .order("name", { ascending: true }); 
+    .order("name", { ascending: true });
 
   if (error) throw error;
   return data;

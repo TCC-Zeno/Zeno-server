@@ -12,7 +12,7 @@ export const updateUser = async (uuid, updateData = {}) => {
       owner_name: updateData.ownerName,
       color: updateData.color,
       accessibility: updateData.accessibility || "Padrão",
-      features: updateData.features 
+      features: updateData.features
     })
     .eq("uuid", uuid)
     .select();
@@ -45,12 +45,12 @@ export const uploadImage = async (file, uuid) => {
     });
   if (error) throw new Error(error.message);
 
-const{data:publicData} = await supabase.storage
+  const { data: publicData } = await supabase.storage
     .from("logos")
     .getPublicUrl(fileName);
-    
 
-const {data} = await supabase
+
+  const { data } = await supabase
     .from("users")
     .update({ logo: publicData.publicUrl })
     .eq("uuid", uuid)
@@ -59,4 +59,4 @@ const {data} = await supabase
   if (error) throw new Error(error.message);
   return data;
 
-  }
+}
