@@ -4,17 +4,25 @@ import {
   getFinanceCategoria,
   postFinanceCategoria,
   editFinance,
-  deleteFinance
-} from "../services/financeService.js"
+  deleteFinance,
+} from "../services/financeService.js";
 
 export const addFinanceform = async (req, res) => {
   try {
-    const { userId, name, value, category, payment_method, type_flow } = req.body;
+    const { userId, name, value, category, payment_method, type_flow } =
+      req.body;
     //criar a tabela
 
     // const financeData = { userId, name, value, category, payment_method, type_flow };
     // const newFinance=  await addFinance(financeData);
-    const newFinance = await addFinance(userId, name, value, category, payment_method, type_flow);
+    const newFinance = await addFinance(
+      userId,
+      name,
+      value,
+      category,
+      payment_method,
+      type_flow
+    );
     res.status(201).json(newFinance);
   } catch (error) {
     // Log detalhado para debug
@@ -31,11 +39,15 @@ export const financeId = async (req, res) => {
     }
     const data = await getFinanceID(uuid);
     if (!data) {
-      return res.status(404).json({ error: "Usuário não encontrado para o ID informado." });
+      return res
+        .status(404)
+        .json({ error: "Usuário não encontrado para o ID informado." });
     }
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: `Erro interno ao atualizar pesquisa: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Erro interno ao atualizar pesquisa: ${error.message}` });
   }
 };
 
@@ -47,11 +59,15 @@ export const financeCategoria = async (req, res) => {
     }
     const data = await getFinanceCategoria(uuid);
     if (!data) {
-      return res.status(404).json({ error: "Usuário não encontrado para o ID informado." });
+      return res
+        .status(404)
+        .json({ error: "Usuário não encontrado para o ID informado." });
     }
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: `Erro interno ao atualizar pesquisa: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Erro interno ao atualizar pesquisa: ${error.message}` });
   }
 };
 
@@ -73,8 +89,17 @@ export const addFinanceCategoria = async (req, res) => {
 
 export const editFinanceForm = async (req, res) => {
   try {
-    const { userId, name, value, category, payment_method, type_flow, id } = req.body;
-    const updatedFinance = await editFinance(userId, name, value, category, payment_method, type_flow, id);
+    const { userId, name, value, category, payment_method, type_flow, id } =
+      req.body;
+    const updatedFinance = await editFinance(
+      userId,
+      name,
+      value,
+      category,
+      payment_method,
+      type_flow,
+      id
+    );
     res.status(200).json(updatedFinance);
   } catch (error) {
     console.error("Erro ao editar finança:", error);

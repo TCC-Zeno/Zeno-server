@@ -79,10 +79,6 @@ export const createProduct = async (req, res) => {
           const parsedId = Number(SupplierInfo);
           if (!isNaN(parsedId) && parsedId > 0) {
             supplierId = parsedId;
-          } else {
-            return res
-              .status(400)
-              .json({ error: "ID do fornecedor inválido." });
           }
         }
       } catch (e) {
@@ -91,15 +87,6 @@ export const createProduct = async (req, res) => {
           .status(400)
           .json({ error: "Dados do fornecedor inválidos." });
       }
-    } else {
-      return res.status(400).json({ error: "Fornecedor não informado." });
-    }
-
-    // Validar se conseguimos um supplierId
-    if (!supplierId) {
-      return res
-        .status(400)
-        .json({ error: "Não foi possível identificar o fornecedor." });
     }
 
     // Upload da imagem
@@ -114,10 +101,6 @@ export const createProduct = async (req, res) => {
           error: `Erro ao enviar imagem: ${err.message}`,
         });
       }
-    } else {
-      return res.status(400).json({
-        error: "Imagem obrigatória não enviada.",
-      });
     }
 
     // Criar produto
@@ -216,7 +199,7 @@ export const updateProductById = async (req, res) => {
 
 export const deleteProductById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const data = await deleteProduct(id);
     res.status(200).json(data);
   } catch (error) {

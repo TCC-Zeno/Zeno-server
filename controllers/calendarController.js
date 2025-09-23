@@ -6,6 +6,7 @@ import {
   update,
 } from "../services/calendarService.js";
 
+// Pegar evento com o UUID
 export const getAppoimentUuid = async (req, res) => {
   try {
     const { uuid } = req.body;
@@ -16,18 +17,14 @@ export const getAppoimentUuid = async (req, res) => {
 
     const getInfosByUuid = await getAppoimentByUuid(uuid);
 
-    if (!getInfosByUuid || getInfosByUuid.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Nenhum evento encontrado para este usuário" });
-    }
-
     return res.status(200).json(getInfosByUuid);
   } catch (err) {
     console.error("Error in getAppoiment:", err);
     res.status(500).json({ error: `Erro interno: ${err.message}` });
   }
 };
+
+//PEGAR EVENTO COM O ID
 export const getAppoimentId = async (req, res) => {
   try {
     const { id } = req.body;
@@ -49,12 +46,10 @@ export const getAppoimentId = async (req, res) => {
   }
 };
 
-
+//INSERIR EVENTO
 export const insertAppoitment = async (req, res) => {
   try {
     const { uuid, title, initial_date, end_date } = req.body;
-
-    // Validate required fields
     if (!uuid || !title || !initial_date || !end_date) {
       return res.status(400).json({
         error:
@@ -79,49 +74,45 @@ export const insertAppoitment = async (req, res) => {
     res.status(500).json({ error: `Erro interno: ${err.message}` });
   }
 };
+
+//ATUALIZAR EVENTO
 export const updateAppoiment = async (req, res) => {
   try {
-    const { uuid, title, initial_date, end_date } = req.body;
-    if (!uuid) {
-      return res.status(400).json({ error: "ID não informado." });
-    }
-    const user = await getAppoimentByUuid(uuid);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ error: "Usuário não encontrado para o ID informado." });
-    }
-    const updateEvents = await update(uuid, {
-      title: title,
-      initial_date: initial_date,
-      end_date: end_date,
-    });
-    if (!updateEvents || updateEvents.length === 0) {
+    const { id, title, initial_date, end_date } = req.body;
+
+    // if (!id) {
+    //   return res.status(400).json({ error: "ID não informado." });
+    // }
+
+    if (!title && !initial_date && !end_date) {
       return res
         .status(400)
         .json({
-          error: "Falha ao atualizar usuário. Verifique os dados enviados.",
+          error: "Pelo menos um campo deve ser fornecido para atualização.",
         });
     }
-    console.log("Controller: ", updateAppoiment);
-    return res.status(200).json(updateAppoiment);
+    const updateEvents = await update(id, title, initial_date, end_date);
+
+    if (!updateEvents || updateEvents.length === 0) {
+      return res.status(400).json({
+        error: "Falha ao atualizar o evento. Verifique os dados enviados.",
+      });
+    }
+
+    return res.status(200).json(updateEvents);
   } catch (err) {
-    res.status(505).json({ error: `Erro interno: ${err.message}` });
+    res.status(500).json({ error: `Erro interno: ${err.message}` });
   }
 };
+
+//DELETAR EVENTO
 export const deleteAppoiment = async (req, res) => {
   try {
     const { id } = req.body;
-    if (!id) {
-      return res.status(400).json({ error: "ID não informado." });
-    }
+
     const deleteEvents = await destroy(id);
-    if (!deleteEvents || deleteEvents.length === 0) {
-      return res.status(400).json({ error: "Falha ao deletar evento." });
-    }
     return res.status(200).json(deleteEvents);
   } catch (err) {
     res.status(505).json({ error: `Erro interno: ${err.message}` });
   }
-
 };

@@ -8,15 +8,17 @@ import fetch from "node-fetch";
 import cron from "node-cron";
 import "./strategies/local.js";
 
-// Rotas 
+// Rotas
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import financeRoutes from "./routes/finance.js";
 import taskRoutes from "./routes/task.js";
 import stockRoutes from "./routes/stock.js";
 import reportRoutes from "./routes/report.js";
-import calendarRoutes from "./routes/calendar.js"
-import servicesRoutes from "./routes/services.js"
+import calendarRoutes from "./routes/calendar.js";
+import servicesRoutes from "./routes/services.js";
+import dashboardRoutes from "./routes/dashboard.js" ;
+import employeeRoutes from "./routes/employee.js";
 
 dotenv.config();
 const app = express();
@@ -130,6 +132,8 @@ app.use("/stock", stockRoutes);
 app.use("/report", reportRoutes);
 app.use("/calendar", calendarRoutes);
 app.use("/services", servicesRoutes);
+app.use("/dashboard", dashboardRoutes);
+app.use("/employee", employeeRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Erro não tratado:', err);
