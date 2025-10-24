@@ -1,5 +1,5 @@
 import express from "express";
-import {updateUserCredential,uploadProfileImage } from "../controllers/userController.js";
+import { updateUserCredential, uploadProfileImage } from "../controllers/userController.js";
 
 const router = express.Router();
 router.post("/update", updateUserCredential);

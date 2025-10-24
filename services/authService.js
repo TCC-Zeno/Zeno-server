@@ -17,7 +17,8 @@ export const getUserByEmail = async (email) => {
     .from("users")
     .select("*")
     .eq("email", email)
-    .single();
+    .maybeSingle();
+  // coloquei para garantir que não de erro, já que o single dá erro se não encontrar
 
   if (error && error.code !== "PGRST116") throw new Error(error.message);
   return data;
@@ -27,7 +28,7 @@ export const getUserById = async (id) => {
     .from("users")
     .select("*")
     .eq("uuid", id)
-    .single();
+    .maybeSingle();
 
   if (error) throw new Error(error.message);
   return data;

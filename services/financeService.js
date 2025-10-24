@@ -29,7 +29,7 @@ export const getFinanceID = async (uuid) => {
     .from("finance")
     .select("*")
     .eq("uuid", uuid)
-    .order("created_at", { ascending: true });
+    .order('created_at', { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;

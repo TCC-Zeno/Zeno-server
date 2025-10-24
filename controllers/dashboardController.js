@@ -1,21 +1,13 @@
-import { addFinance } from "../services/dashboardService.js";
+import { addFinance } from '../services/dashboardService.js';
 
 export const addFinanceform = async (req, res) => {
   try {
-    const { userId, name, value, category, payment_method, type_flow } =
-      req.body;
+    const { userId, name, value, category, payment_method, type_flow } = req.body;
     //criar a tabela
 
     // const financeData = { userId, name, value, category, payment_method, type_flow };
     // const newFinance=  await addFinance(financeData);
-    const newFinance = await addFinance(
-      userId,
-      name,
-      value,
-      category,
-      payment_method,
-      type_flow
-    );
+    const newFinance = await addFinance(userId, name, value, category, payment_method, type_flow);
     res.status(201).json(newFinance);
   } catch (error) {
     // Log detalhado para debug

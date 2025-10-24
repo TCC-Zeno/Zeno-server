@@ -17,7 +17,7 @@ import stockRoutes from "./routes/stock.js";
 import reportRoutes from "./routes/report.js";
 import calendarRoutes from "./routes/calendar.js";
 import servicesRoutes from "./routes/services.js";
-import dashboardRoutes from "./routes/dashboard.js" ;
+import dashboardRoutes from "./routes/dashboard.js";
 import employeeRoutes from "./routes/employee.js";
 
 dotenv.config();
@@ -77,7 +77,7 @@ try {
     collectionName: 'sessions',
     ttl: 7 * 24 * 60 * 60, // 7 dias
     autoRemove: 'native',
-    touchAfter: 24 * 3600, 
+    touchAfter: 24 * 3600,
   });
 
   store.on('error', (error) => {

@@ -5,7 +5,7 @@ export const getAppoimentByUuid = async (uuid) => {
   const { data, error } = await supabase
     .from("calendar")
     .select("*")
-    .eq("uuid", uuid);
+    .eq("uuid", uuid)
 
   if (error) throw new Error(error.message);
   return data;
@@ -16,7 +16,7 @@ export const getAppoimentById = async (id) => {
   const { data, error } = await supabase
     .from("calendar")
     .select("*")
-    .eq("id", id);
+    .eq("id", id)
 
   if (error) throw new Error(error.message);
   return data;
@@ -27,7 +27,7 @@ export const insertEvents = async (uuid, title, initial_date, end_date) => {
   const { data, error } = await supabase
     .from("calendar")
     .insert({ uuid, title, initial_date, end_date })
-    .select();
+    .select()
 
   if (error) throw new Error(error.message);
   return data;
@@ -39,17 +39,20 @@ export const update = async (id, title, initial_date, end_date) => {
     .from("calendar")
     .update({ id, title, initial_date, end_date })
     .eq("id", id)
-    .select();
+    .select()
 
   if (error) throw new Error(error.message);
 
   return data;
-};
+}
 
 //deletar evento
 export const destroy = async (id) => {
-  const { data, error } = await supabase.from("calendar").delete().eq("id", id);
+  const { data, error } = await supabase
+    .from("calendar")
+    .delete()
+    .eq("id", id)
 
   if (error) throw new Error(error.message);
   return data;
-};
+}

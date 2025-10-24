@@ -1,5 +1,5 @@
 import express from "express";
-import {addFinanceform} from "../controllers/dashboardController.js";
+import { addFinanceform } from "../controllers/dashboardController.js";
 
 const router = express.Router();
 

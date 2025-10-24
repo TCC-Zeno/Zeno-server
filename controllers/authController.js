@@ -7,17 +7,18 @@ import {
   deleteUser,
   searchUsers*/
 } from "../services/authService.js";
+import { getEmployeeByEmail, getEmployeeById } from "../services/employeeService.js"
 import argon2 from "argon2";
 
 // Cadastrar usuário
 export const signup = async (req, res) => {
   try {
-    const { cnpj, email, password, user_type } = req.body;
+    const { cnpj, email, password, } = req.body;
     // Validação básica
     if (!cnpj || !email || !password) {
       return res.status(400).json({
         success: false,
-        error: "Todos os campos são obrigatórios.",
+        error: "Todos os campos são obrigatórios."
       });
     }
     // Verifica se o usuário já existe
@@ -25,86 +26,107 @@ export const signup = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        error: "E-mail já cadastrado.",
+        error: "E-mail já cadastrado."
       });
     }
     // Cria usuário
     const hashedPassword = await argon2.hash(password);
 
-    const userData = { cnpj, email, password: hashedPassword, user_type };
+    const userData = { cnpj, email, password: hashedPassword };
     const newUser = await createUser(userData);
     res.status(201).json({
       success: true,
-      user: newUser,
+      user: newUser
     });
   } catch (error) {
     console.error("Erro ao criar usuário:", error);
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: error.message
     });
   }
 };
 
-// Login de usuário
+// Login de usuário 
 export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await getUserByEmail(email);
+
+    let user = await getUserByEmail(email);
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: "Usário não encontrado",
-      });
+      user = await getEmployeeByEmail(email);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: "Usuário não encontrado"
+        });
+      }
     }
     // Verifica senha (com criptografia)
-    if (!(await argon2.verify(user.password, password))) {
+    if (!await argon2.verify(user.password, password)) {
       return res.status(401).json({
         success: false,
-        error: "Senha incorreta",
+        error: "Senha incorreta"
       });
     }
 
     // Salvar na sessão
-    req.session.userId = user.uuid;
-    req.session.user = {
-      id: user.uuid,
-      email: user.email,
-      cnpj: user.cnpj,
-    };
+    if (user.id) {
+      // employee
+      req.session.userId = user.uuid;
+      req.session.employeeId = user.id;
+      req.session.user = {
+        id: user.uuid,
+        employeeId: user.id,
+        email: user.email,
+        cnpj: user.cnpj
+      };
+    } else {
+      // usuário normal
+      req.session.userId = user.uuid;
+      req.session.user = {
+        id: user.uuid,
+        email: user.email,
+        cnpj: user.cnpj
+      };
+    }
+
 
     // Force salvar a sessão
     req.session.save((err) => {
       if (err) {
-        console.error("Erro ao salvar sessão:", err);
+        console.error('Erro ao salvar sessão:', err);
         return res.status(500).json({
           success: false,
-          error: "Erro ao salvar sessão",
+          error: "Erro ao salvar sessão"
         });
       }
 
-      // Remove senha da resposta pq é feio
+      // Remove senha da resposta pq é feio 
       const { password: _, ...userWithoutPassword } = user;
 
       res.status(200).json({
         success: true,
         user: userWithoutPassword,
+        employee: user.id ? true : false,
         debug: {
           sessionId: req.sessionID,
           userId: req.session.userId,
-        },
+          employeeId: req.session.employeeId || null
+        }
       });
     });
+
   } catch (error) {
     console.error("Erro no login:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor",
+      error: "Erro interno do servidor"
     });
   }
 };
 
-// Verificar sessão ativa
+// Verificar sessão ativa 
 export const checkSession = (req, res) => {
   try {
     if (req.session && req.session.userId && req.session.user) {
@@ -113,8 +135,8 @@ export const checkSession = (req, res) => {
         user: req.session.user,
         debug: {
           sessionId: req.sessionID,
-          userId: req.session.userId,
-        },
+          userId: req.session.userId
+        }
       });
     } else {
       res.status(401).json({
@@ -126,7 +148,7 @@ export const checkSession = (req, res) => {
     console.error("Erro ao verificar sessão:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor",
+      error: "Erro interno do servidor"
     });
   }
 };
@@ -135,13 +157,12 @@ export const checkSession = (req, res) => {
 export const getSession = async (req, res) => {
   try {
     if (req.session && req.session.user) {
-      const userId =
-        req.session.user.id || req.session.user.uuid || req.session.user._id;
+      const userId = req.session.userId || req.session.user.id || req.session.user.uuid || req.session.user._id;
 
       if (!userId) {
         return res.status(400).json({
           success: false,
-          error: "ID do usuário não encontrado na sessão",
+          error: "ID do usuário não encontrado na sessão"
         });
       }
 
@@ -149,28 +170,37 @@ export const getSession = async (req, res) => {
       if (!user) {
         return res.status(404).json({
           success: false,
-          error: "Usuário não encontrado",
+          error: "Usuário não encontrado"
         });
+      }
+
+      let employee = null;
+      if (req.session.employeeId) {
+        employee = await getEmployeeById(req.session.employeeId);
       }
 
       return res.status(200).json({
         success: true,
         user,
+        employee
       });
     }
 
     return res.status(401).json({
       success: false,
-      error: "Sessão não encontrada",
+      error: "Sessão não encontrada"
     });
+
   } catch (error) {
     console.error("Erro ao obter sessão:", error);
     return res.status(500).json({
       success: false,
-      error: "Erro ao obter sessão",
+      error: "Erro ao obter sessão"
     });
   }
 };
+
+
 
 export const logout = (req, res) => {
   try {
@@ -179,21 +209,21 @@ export const logout = (req, res) => {
         console.error("Erro ao destruir sessão:", err);
         return res.status(500).json({
           success: false,
-          error: "Erro ao fazer logout",
+          error: "Erro ao fazer logout"
         });
       }
 
-      res.clearCookie("connect.sid");
+      res.clearCookie('sessionId');
       res.status(200).json({
         success: true,
-        message: "Logout realizado com sucesso",
+        message: "Logout realizado com sucesso"
       });
     });
   } catch (error) {
     console.error("Erro no logout:", error);
     res.status(500).json({
       success: false,
-      error: "Erro interno do servidor",
+      error: "Erro interno do servidor"
     });
   }
 };

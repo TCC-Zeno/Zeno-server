@@ -17,6 +17,8 @@ export const getAppoimentUuid = async (req, res) => {
 
     const getInfosByUuid = await getAppoimentByUuid(uuid);
 
+
+
     return res.status(200).json(getInfosByUuid);
   } catch (err) {
     console.error("Error in getAppoiment:", err);
@@ -80,23 +82,22 @@ export const updateAppoiment = async (req, res) => {
   try {
     const { id, title, initial_date, end_date } = req.body;
 
-    // if (!id) {
-    //   return res.status(400).json({ error: "ID não informado." });
-    // }
+
+    if (!id) {
+      return res.status(400).json({ error: "ID não informado." });
+    }
 
     if (!title && !initial_date && !end_date) {
-      return res
-        .status(400)
-        .json({
-          error: "Pelo menos um campo deve ser fornecido para atualização.",
-        });
+      return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
     }
     const updateEvents = await update(id, title, initial_date, end_date);
 
     if (!updateEvents || updateEvents.length === 0) {
-      return res.status(400).json({
-        error: "Falha ao atualizar o evento. Verifique os dados enviados.",
-      });
+      return res
+        .status(400)
+        .json({
+          error: "Falha ao atualizar o evento. Verifique os dados enviados.",
+        });
     }
 
     return res.status(200).json(updateEvents);
@@ -115,4 +116,5 @@ export const deleteAppoiment = async (req, res) => {
   } catch (err) {
     res.status(505).json({ error: `Erro interno: ${err.message}` });
   }
+
 };

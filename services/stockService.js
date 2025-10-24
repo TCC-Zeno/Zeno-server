@@ -78,12 +78,13 @@ export const uploadImage = async (file, uuid) => {
   return publicData.publicUrl;
 };
 
+
 export const getProduct = async (userId) => {
   const { data, error } = await supabase
     .from("product")
     .select("*")
     .eq("uuid", userId)
-    .order("created_at", { ascending: true });
+    .order('created_at', { ascending: true });
 
   if (error) throw error;
   return data;
@@ -99,7 +100,10 @@ export const updateProduct = async (id, productData) => {
 };
 
 export const deleteProduct = async (id) => {
-  const { data, error } = await supabase.from("product").delete().match({ id });
+  const { data, error } = await supabase
+    .from("product")
+    .delete()
+    .match({ id });
   if (error) throw error;
   return data;
 };
@@ -145,7 +149,7 @@ export const getCategorys = async (uuid) => {
     .from("product")
     .select("product_category")
     .eq("uuid", uuid)
-    .order("created_at", { ascending: true });
+    .order('created_at', { ascending: true });
 
   if (error) throw error;
   return data;

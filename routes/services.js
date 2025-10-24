@@ -1,10 +1,5 @@
 import express from "express";
-import {
-  addServicesform,
-  servicesId,
-  editServicesForm,
-  servicesDelete,
-} from "../controllers/servicesController.js";
+import { addServicesform, servicesId, editServicesForm, servicesDelete } from "../controllers/servicesController.js";
 const router = express.Router();
 
 router.post("/addServicesform", addServicesform);
